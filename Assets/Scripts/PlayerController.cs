@@ -5,7 +5,7 @@ using Quaternion = System.Numerics.Quaternion;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float gravity = 500f;
+    [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float rotationSpeed = 10f;
 
@@ -41,13 +41,24 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        CheckGrounded();
         GetMovementInput();
         
         //Update player object rotation so it matches the camera
         UnityEngine.Quaternion cameraObjectRotation = UnityEngine.Quaternion.Euler(0f, _camera.transform.eulerAngles.y, 0f);
         transform.rotation = UnityEngine.Quaternion.Lerp(transform.rotation, cameraObjectRotation, rotationSpeed * Time.deltaTime);
         
-        _controller.Move(transform.rotation * new Vector3(_direction.x, 0f, _direction.y)  * (Time.deltaTime * moveSpeed));
+        _controller.Move(transform.rotation * new Vector3(_direction.x, 0f, _direction.y) * (Time.deltaTime * moveSpeed));
+    }
+
+    private void CheckGrounded()
+    {
+        Debug.Log("Is Grounded: " + _controller.isGrounded);
+        if (_controller.isGrounded)
+            _velocity.y = 0f;
+        else
+            _velocity.y += gravity * Time.deltaTime;
+        _controller.Move(_velocity * Time.deltaTime);
     }
 
     private void GetMovementInput()
