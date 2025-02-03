@@ -1549,7 +1549,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravity: -9.81
-  moveSpeed: 10
+  moveSpeed: 4
   rotationSpeed: 180
 --- !u!1 &2139634461
 GameObject:
