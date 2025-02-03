@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2324.0334, g: 2521.5334, b: 3506.9692, a: 1}
+  m_IndirectSpecularColor: {r: 2324.7698, g: 2523.2874, b: 3508.895, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1158,7 +1158,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3, y: -0, z: 2}
-  m_LocalScale: {x: 8.3496, y: 0.0059597, z: 7.5278}
+  m_LocalScale: {x: 26.069954, y: 0.0059597, z: 26.402252}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
