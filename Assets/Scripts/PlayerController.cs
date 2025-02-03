@@ -17,12 +17,8 @@ public class PlayerController : MonoBehaviour
     private InputAction _move;
     
     private Vector2 _input;
-    private Vector2 _lookInput;
     private Vector2 _direction;
-    private Vector3 _moveDirection;
     private Vector2 _velocity;
-
-    private Vector3 _currentPosition;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
