@@ -15,6 +15,7 @@ namespace Player
         // Inputs
         private PlayerInput _playerInput;
         private InputAction _move;
+        private InputAction _sprint;
     
         private Vector2 _input;
         private Vector2 _direction;
@@ -32,6 +33,7 @@ namespace Player
             _playerInput = GameObject.FindGameObjectWithTag("InputManager").GetComponent<PlayerInput>();
             _playerInput.SwitchCurrentActionMap("Player");
             _move = _playerInput.actions["Move"];
+            _sprint = _playerInput.actions["Sprint"];
         }
 
         // Update is called once per frame
@@ -41,8 +43,8 @@ namespace Player
             GetMovementInput();
         
             //Update player object rotation so it matches the camera
-            UnityEngine.Quaternion cameraObjectRotation = UnityEngine.Quaternion.Euler(0f, _camera.transform.eulerAngles.y, 0f);
-            transform.rotation = UnityEngine.Quaternion.Lerp(transform.rotation, cameraObjectRotation, rotationSpeed * Time.deltaTime);
+            Quaternion cameraObjectRotation = Quaternion.Euler(0f, _camera.transform.eulerAngles.y, 0f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, cameraObjectRotation, rotationSpeed * Time.deltaTime);
         
             _controller.Move(transform.rotation * new Vector3(_direction.x, 0f, _direction.y) * (Time.deltaTime * moveSpeed));
         }
