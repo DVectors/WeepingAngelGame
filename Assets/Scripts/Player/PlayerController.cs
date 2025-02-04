@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,6 +8,8 @@ namespace Player
     {
         [SerializeField] private float gravity = -9.81f;
         [SerializeField] private float moveSpeed = 10f;
+        [SerializeField] private float maxSpeed = 8f;
+        [SerializeField] private float maxSprintTime = 4.5f;
         [SerializeField] private float rotationSpeed = 10f;
 
         private CharacterController _controller;
@@ -20,12 +23,16 @@ namespace Player
         private Vector2 _input;
         private Vector2 _direction;
         private Vector2 _velocity;
-    
+
+        private bool _isSprinting;
+        
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Start()
         {
             _controller = GetComponent<CharacterController>();
             _camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
+
+            _isSprinting = false;
 
             transform.rotation = _camera.transform.rotation;
 
@@ -41,7 +48,8 @@ namespace Player
         {
             CheckGrounded();
             GetMovementInput();
-        
+            PlayerSprinting();
+            
             //Update player object rotation so it matches the camera
             Quaternion cameraObjectRotation = Quaternion.Euler(0f, _camera.transform.eulerAngles.y, 0f);
             transform.rotation = Quaternion.Lerp(transform.rotation, cameraObjectRotation, rotationSpeed * Time.deltaTime);
@@ -64,6 +72,65 @@ namespace Player
             _input = _move.ReadValue<Vector2>();
             Debug.Log("_input value: " + _input);
             _direction = new Vector3(_input.x, _input.y);
+        }
+
+        private void PlayerSprinting()
+        {
+            Debug.Log("Is Sprinting: " + _isSprinting);
+            
+            if (_controller.isGrounded)
+            {
+                _sprint.performed += SprintPerformed;
+
+                if (_isSprinting && (_direction.x > 0.0f || _direction.y > 0.0f))
+                {
+                    Debug.Log("Time Sprinting " + maxSprintTime);
+                    Debug.Log("Move Speed " + moveSpeed);
+                
+                    moveSpeed += moveSpeed * Time.deltaTime;
+                    maxSprintTime -= Time.deltaTime;
+
+                    if (moveSpeed >= maxSpeed)
+                    {
+                        moveSpeed = maxSpeed;
+                    }
+
+                    if (maxSprintTime <= 0.0f)
+                    {
+                        moveSpeed -= moveSpeed * Time.deltaTime * 2;
+                        
+                        if (moveSpeed <= 4f)
+                        {
+                            moveSpeed = 4f;
+                            _isSprinting = false;
+                        }
+                    }
+                }
+                else
+                {
+                    if (moveSpeed >= 4f)
+                    {
+                        moveSpeed -= moveSpeed * Time.deltaTime;
+
+                        if (moveSpeed <= 4f)
+                        {
+                            moveSpeed = 4f;
+                        }
+                    }
+                }
+
+                _sprint.canceled += SprintCanceled;
+            }
+        }
+
+        private void SprintPerformed(InputAction.CallbackContext ctx)
+        {
+            _isSprinting = true;
+        }
+        
+        private void SprintCanceled(InputAction.CallbackContext ctx)
+        {
+            _isSprinting = false;
         }
     }
 }
