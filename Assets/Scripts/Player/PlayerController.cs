@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,7 @@ namespace Player
         [SerializeField] private float gravity = -9.81f;
         [SerializeField] private float moveSpeed = 10f;
         [SerializeField] private float maxSpeed = 8f;
+        [SerializeField] private float acceleration = 20f;
         [SerializeField] private float maxSprintTime = 4.5f;
         [SerializeField] private float rotationSpeed = 10f;
 
@@ -25,10 +27,18 @@ namespace Player
         private Vector2 _velocity;
 
         private bool _isSprinting;
+        private IEnumerator _sprintRechargeCoroutine;
+        
+        // Backup the original values for speed and sprint time
+        private float _originalMoveSpeed;
+        private float _originalMaxSprintTime;
         
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Start()
         {
+            _originalMoveSpeed = moveSpeed;
+            _originalMaxSprintTime = maxSprintTime;
+            
             _controller = GetComponent<CharacterController>();
             _camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
 
@@ -87,7 +97,7 @@ namespace Player
                     Debug.Log("Time Sprinting " + maxSprintTime);
                     Debug.Log("Move Speed " + moveSpeed);
                 
-                    moveSpeed += moveSpeed * Time.deltaTime;
+                    moveSpeed += moveSpeed * acceleration * Time.deltaTime;
                     maxSprintTime -= Time.deltaTime;
 
                     if (moveSpeed >= maxSpeed)
@@ -97,25 +107,47 @@ namespace Player
 
                     if (maxSprintTime <= 0.0f)
                     {
-                        moveSpeed -= moveSpeed * Time.deltaTime * 2;
-                        
-                        if (moveSpeed <= 4f)
+                        maxSprintTime = _originalMaxSprintTime;
+                        //moveSpeed = _originalMoveSpeed;
+                        moveSpeed -= moveSpeed * (acceleration * 2) * Time.deltaTime;
+
+                        _sprintRechargeCoroutine = SprintRecharge(4f);
+                        StopCoroutine(_sprintRechargeCoroutine);
+
+                        _isSprinting = false;
+
+                        /*if (moveSpeed <= 4f)
                         {
                             moveSpeed = 4f;
                             _isSprinting = false;
-                        }
+                        }*/
                     }
                 }
                 else
                 {
-                    if (moveSpeed >= 4f)
+                    if (moveSpeed > _originalMoveSpeed)
                     {
-                        moveSpeed -= moveSpeed * Time.deltaTime;
-
-                        if (moveSpeed <= 4f)
+                        /*if (moveSpeed >= 4f)
                         {
-                            moveSpeed = 4f;
+                            moveSpeed -= moveSpeed * Time.deltaTime;
+
+                            if (moveSpeed <= 4f)
+                            {
+                                moveSpeed = 4f;
+                            }
+                        }*/
+                        
+                        maxSprintTime = _originalMaxSprintTime;
+                    
+                        moveSpeed -= moveSpeed * acceleration * Time.deltaTime * 2;
+
+                        if (moveSpeed <= _originalMoveSpeed)
+                        {
+                            moveSpeed = _originalMoveSpeed;
                         }
+                    
+                        _sprintRechargeCoroutine = SprintRecharge(4f);
+                        StopCoroutine(_sprintRechargeCoroutine);
                     }
                 }
 
@@ -131,6 +163,11 @@ namespace Player
         private void SprintCanceled(InputAction.CallbackContext ctx)
         {
             _isSprinting = false;
+        }
+
+        private IEnumerator SprintRecharge(float waitTime)
+        {
+            yield return new WaitForSeconds(waitTime);
         }
     }
 }
