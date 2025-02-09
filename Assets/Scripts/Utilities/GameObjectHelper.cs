@@ -1,19 +1,22 @@
 using UnityEngine;
 
-public static class GameObjectHelper
+namespace Utilities
 {
-    public static GameObject FindChildGameObjectByTag(GameObject parentGameObject, string tag)
+    public static class GameObjectHelper
     {
-        Transform parentObjectTransform = parentGameObject.transform;
-
-        for (int i = 0; i < parentObjectTransform.childCount; i++)
+        public static GameObject FindChildGameObjectByTag(GameObject parentGameObject, string tag)
         {
-            if (parentObjectTransform.GetChild(i).gameObject.CompareTag(tag))
-            {
-                return parentObjectTransform.GetChild(i).gameObject;
-            }
-        }
+            Transform parentObjectTransform = parentGameObject.transform;
 
-        return null;
+            for (int i = 0; i < parentObjectTransform.childCount; i++)
+            {
+                if (parentObjectTransform.GetChild(i).gameObject.CompareTag(tag))
+                {
+                    return parentObjectTransform.GetChild(i).gameObject;
+                }
+            }
+
+            return null;
+        }
     }
 }
