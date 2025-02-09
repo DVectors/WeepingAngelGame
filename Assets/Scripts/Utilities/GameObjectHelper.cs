@@ -4,7 +4,7 @@ namespace Utilities
 {
     public static class GameObjectHelper
     {
-        public static GameObject FindChildGameObjectByTag(GameObject parentGameObject, string tag)
+        public static GameObject FindChildGameObjectByTag(this GameObject parentGameObject, string tag)
         {
             Transform parentObjectTransform = parentGameObject.transform;
 

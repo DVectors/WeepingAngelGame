@@ -41,8 +41,7 @@ namespace Player
             _originalMaxSprintTime = maxSprintTime;
             
             _controller = GetComponent<CharacterController>();
-            _camera = GameObjectHelper.FindChildGameObjectByTag(
-                gameObject, "PlayerCamera").transform;
+            _camera = gameObject.FindChildGameObjectByTag("PlayerCamera").transform;
 
             _isSprinting = false;
 
